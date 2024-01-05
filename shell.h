@@ -18,24 +18,23 @@
 #define BUF_FLUSH -1
 
 /* for command chaining */
-#define CMD_NORM        0
-#define CMD_OR          1
-#define CMD_AND         2
-#define CMD_CHAIN       3
+#define CMD_NORM	0
+#define CMD_OR		1
+#define CMD_AND		2
+#define CMD_CHAIN	3
 
 /* for convert_number() */
-#define CONVERT_LOWERCASE       1
-#define CONVERT_UNSIGNED        2
+#define CONVERT_LOWERCASE		1
+#define CONVERT_UNSIGNED		2
 
 /* 1 if using system getline() */
 #define USE_GETLINE 0
 #define USE_STRTOK 0
 
-#define HIST_FILE       ".simple_shell_history"
-#define HIST_MAX        4096
+#define HIST_FILE		".simple_shell_history"
+#define HIST_MAX		4096
 
 extern char **environ;
-
 
 /**
  * struct liststr -the singly linked list
@@ -112,17 +111,17 @@ typedef struct builtin
 } builtin_table;
 
 /* lists.c functions*/
-list_t *add_node(list_t **, const char *, int);
-list_t *add_node_end(list_t **, const char *, int);
+list_t *add_a_node(list_t **, const char *, int);
+list_t *add_node_at_end(list_t **, const char *, int);
 size_t print_list_str(const list_t *);
-int delete_node_at_index(list_t **, unsigned int);
-void free_list(list_t **);
+int erase_node_at_index(list_t **, unsigned int);
+void free_a_list(list_t **);
 
 /* lists1.c functions*/
-size_t list_len(const list_t *);
-char **list_to_strings(list_t *);
-size_t print_list(const list_t *);
-list_t *node_starts_with(list_t *, char *, char);
+size_t _my_list_len(const list_t *);
+char **shell_list_to_strings(list_t *);
+size_t print_my_list(const list_t *);
+list_t *node_starts_point(list_t *, char *, char);
 ssize_t get_node_index(list_t *, list_t *);
 
 /* parser.c functions*/
@@ -134,7 +133,7 @@ char *find_path(info_t *, char *, char *);
 int loophsh(char **);
 
 /* errors.c functions*/
-void _eputs(char *);
+void _eputs_str(char *);
 int _eputchar(char);
 int _putfd(char c, int fd);
 int _putsfd(char *str, int fd);
@@ -159,24 +158,24 @@ int _atoi(char *);
 
 /* errors1.c functions*/
 int _erratoi(char *);
-void print_error(info_t *, char *);
-int print_d(int, int);
+void print_error_msg(info_t *, char *);
+int _print_decimal(int, int);
 char *convert_number(long int, int, int);
 void remove_comments(char *);
 
 /* builtin.c functions*/
-int _myexit(info_t *);
-int _mycd(info_t *);
-int _myhelp(info_t *);
+int _exit_shell(info_t *);
+int _current_dir(info_t *);
+int _mod_cd(info_t *);
 
 /* builtin1.c functions*/
 int _myhistory(info_t *);
 int _myalias(info_t *);
 
 /* exits.c functions*/
-char *_strncpy(char *, char *, int);
-char *_strncat(char *, char *, int);
-char *_strchr(char *, char);
+char *_str_cpy(char *, char *, int);
+char *_str_cat(char *, char *, int);
+char *_str_chr(char *, char);
 
 /* tokenizer.c functions*/
 char **strtow(char *, char *);
@@ -208,14 +207,14 @@ int _myunsetenv(info_t *);
 int populate_env_list(info_t *);
 
 /* getenv.c functions*/
-char **get_environ(info_t *);
-int _unsetenv(info_t *, char *);
-int _setenv(info_t *, char *, char *);
+char **get_environment(info_t *);
+int _undefine_environment(info_t *, char *);
+int _define_environment(info_t *, char *, char *);
 
 /* history.c function*/
-char *get_history_file(info_t *info);
-int write_history(info_t *info);
-int read_history(info_t *info);
+char *_get_file_history(info_t *info);
+int write_to_history(info_t *info);
+int read_file_history(info_t *info);
 int build_history_list(info_t *info, char *buf, int linecount);
 int renumber_history(info_t *info);
 
@@ -233,3 +232,4 @@ void find_cmd(info_t *);
 void fork_cmd(info_t *);
 
 #endif
+

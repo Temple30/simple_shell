@@ -220,11 +220,11 @@ int build_history_list(info_t *info, char *buf, int linecount);
 int renumber_history(info_t *info);
 
 /* vars.c functions*/
-int is_chain(info_t *, char *, size_t *);
-void check_chain(info_t *, char *, size_t *, size_t, size_t);
-int replace_alias(info_t *);
-int replace_vars(info_t *);
-int replace_string(char **, char *);
+int is_chain(info_t *info, char *buf, size_t *p);
+void check_chain(info_t *info, char *buf, size_t *p, size_t i, size_t len);
+int replace_alias(info_t *info);
+int replace_vars(info_t *info);
+int replace_string(char **old, char *new);
 
 /* shloop.c functions*/
 int hsh(info_t *, char **);

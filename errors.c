@@ -1,19 +1,18 @@
 #include "shell.h"
 
 /**
-* _eputs_str - prints a string from usser input
-* @str: string that will be printed
-*
-* Return: 0 Always sucess.
-*/
-void _eputs_str(char *str)
+ * _eputs - Prints a string to stderr
+ * @str: String to be printed
+ *
+ * Return: void
+ */
+void _eputs(char *str)
 {
 	int j = 0;
 
 	if (!str)
-	{
 		return;
-	}
+
 	while (str[j] != '\0')
 	{
 		_eputchar(str[j]);
@@ -22,12 +21,11 @@ void _eputs_str(char *str)
 }
 
 /**
-* _eputchar - updated with the char c with stddr
-* @c: Printing the char
-*
-* Return: 1 if suceed else -1 if fail,
-* and the appropriate value of erro is set.
-*/
+ * _eputchar - Updates stderr with the character 'c'
+ * @c: Character to be printed
+ *
+ * Return: 1 on success, -1 on failure
+ */
 int _eputchar(char c)
 {
 	static int j;
@@ -38,57 +36,56 @@ int _eputchar(char c)
 		write(2, buf, j);
 		j = 0;
 	}
+
 	if (c != BUF_FLUSH)
-	{
 		buf[j++] = c;
-	}
-	return (1);
+
+	return 1;
 }
 
 /**
-* _putfd - puts a char c in the supplied input
-* @c: Printing the char
-* @input: The address to write to
-*
-* Return: 1 is returned upon success, -1 upon failure,
-* and the appropriate value of erro is set.
-*/
-int _putfd(char c, int input)
+ * _putfd - Puts a character 'c' in the supplied file descriptor 'fd'
+ * @c: Character to be printed
+ * @fd: File descriptor to write to
+ *
+ * Return: 1 on success, -1 on failure
+ */
+int _putfd(char c, int fd)
 {
 	static int j;
 	static char buf[WRITE_BUF_SIZE];
 
 	if (c == BUF_FLUSH || j >= WRITE_BUF_SIZE)
 	{
-		write(input, buf, j);
+		write(fd, buf, j);
 		j = 0;
 	}
+
 	if (c != BUF_FLUSH)
-	{
 		buf[j++] = c;
-	}
-	return (1);
+
+	return 1;
 }
 
 /**
-* _putsfd - prints a string of input
-* @str: string that will be printed
-* @input: The address to be written to
-*
-* Return: the total of character entered
-*/
-int _putsfd(char *str, int input)
+ * _putsfd - Displays a string to the specified file descriptor 'fd'
+ * @str: String to be printed
+ * @fd: File descriptor to write to
+ *
+ * Return: Number of characters written
+ */
+int _putsfd(char *str, int fd)
 {
 	int j = 0;
 
 	if (!str)
-	{
-		return (0);
-	}
+		return 0;
+
 	while (*str)
 	{
-		j += _putfd(*str++, input);
+		j += _putfd(*str++, fd);
 	}
-	return (j);
+
+	return j;
 }
 

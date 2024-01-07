@@ -1,101 +1,115 @@
 #include "shell.h"
 
 /**
- * _exit_shell - exit  the shell
- * @info: this holds possible arguments which is Used to keep
- * continous function prototype.
- * Return: for info.argv[0] != "exit" specified exit status (0)
- */
-int _exit_shell(info_t *info)
-{
-	int checkexit;
-
-	if (info->argv[1]) /* If exit argument is available */
-	{
-		checkexit = _erratoi(info->argv[1]);
-		if (checkexit == -1)
-		{
-			info->status = 2;
-			print_error(info, "Invalid number: ");
-			_eputs(info->argv[1]);
-			_eputchar('\n');
-			return (1);
-		}
-		info->err_num = _erratoi(info->argv[1]);
-		return (-2);
-	}
-	info->err_num = -1;
-	return (-2);
-}
-
-/**
- * _current_dir - modification of the current working directory
+ * _myhistory - shows the history list, one command per line,
+ * with line numbers starting at 0 before each command.
  * @info: Potential argument-containing structure is employed
  * to keep the constant function prototype
- * Return: 0 sucess
+ *  Return: constant 0.
  */
-int _current_dir(info_t *info)
+int _myhistory(info_t *info)
 {
-	char *s, *dir, buffer[1024];
-	int chdir_ret;
-
-	s = getcwd(buffer, 1024);
-	if (!s)
-		_puts("TODO: >>getcwd failure emsg here<<\n");
-	if (!info->argv[1])
-	{
-		dir = _getenv(info, "HOME=");
-		if (!dir)
-		{
-			chdir_ret = /* TODO: what should this be? */
-				chdir((dir = _getenv(info, "PWD=")) ? dir : "/");
-		}
-		else
-			chdir_ret = chdir(dir);
-	}
-	else if (_strcmp(info->argv[1], "-") == 0)
-	{
-		if (!_getenv(info, "OLDPWD="))
-		{
-			_puts(s);
-			_putchar('\n');
-			return (1);
-		}
-		_puts(_getenv(info, "OLDPWD=")), _putchar('\n');
-		chdir_ret = /* TODO: this should be what? */
-			chdir((dir = _getenv(info, "OLDPWD=")) ? dir : "/");
-	}
-	else
-		chdir_ret = chdir(info->argv[1]);
-	if (chdir_ret == -1)
-	{
-		print_error(info, "Unable to change directory ");
-		_eputs(info->argv[1]), _eputchar('\n');
-	}
-	else
-	{
-		_setenv(info, "OLDPWD", _getenv(info, "PWD="));
-		_setenv(info, "PWD", getcwd(buffer, 1024));
-	}
-	return (0);
+        print_list(info->history);
+        return (0);
 }
 
 /**
- * _mod_cd - this modifications process's the current directory
- * @info: Structure with potential arguments
- * used to preserve the constant function prototype.
- * Return: 0 constant
+ * unset_alias - changes alias to a string
+ * @info: variable struct
+ * @str: aliasing the string
+ *
+ * Return: 0 always on success and 1 for failure
  */
-int _mod_cd(info_t *info)
+int unset_alias(info_t *info, char *str)
 {
-	char **arg_array;
+        char *p, c;
+        int ret;
 
-	arg_array = info->argv;
-	_puts("help call works. Function has not been implemented \n");
-	if (0)
-	{
-		_puts(*arg_array); /* temp att_unused workaround */
-	}
-	return (0);
+        p = _strchr(str, '=');
+        if (!p)
+                return (1);
+        c = *p;
+        *p = 0;
+        ret = delete_node_at_index(&(info->alias),
+                get_node_index(info->alias, node_starts_with(info->alias, str, -1)));
+        *p = c;
+        return (ret);
 }
 
+/**
+ * set_alias - changes alias to a string
+ * @info: variable struct
+ * @str: aliasing the string
+ *
+ * Return:  0 always on success and 1 for failure
+ */
+int set_alias(info_t *info, char *str)
+{
+        char *p;
+
+        p = _strchr(str, '=');
+        if (!p)
+                return (1);
+        if (!*++p)
+                return (unset_alias(info, str));
+
+        unset_alias(info, str);
+        return (add_node_end(&(info->alias), str, 0) == NULL);
+}
+
+/**
+ * print_alias - displays an alias string.
+ * @node: an alias node
+ *
+ * Return: 0 always on success and 1 for failure
+ */
+int print_alias(list_t *node)
+{
+        char *p = NULL, *a = NULL;
+
+        if (node)
+        {
+                p = _strchr(node->str, '=');
+                for (a = node->str; a <= p; a++)
+                _putchar(*a);
+                _putchar('\'');
+                _puts(p + 1);
+                _puts("'\n");
+                return (0);
+        }
+        return (1);
+}
+
+/**
+ * _myalias - imitates the built-in alias (man alias)
+ * @info: Potential argument-containing structure is employed
+ * to keep the constant function prototype.
+ *  Return: constant 0
+ */
+int _myalias(info_t *info)
+{
+        int j = 0;
+        char *p = NULL;
+        list_t *node = NULL;
+
+        if (info->argc == 1)
+        {
+                node = info->alias;
+                while (node)
+                {
+                        print_alias(node);
+                        node = node->next;
+                }
+                return (0);
+        }
+        for (j = 1; info->argv[j]; j++)
+        {
+                p = _strchr(info->argv[j], '=');
+                if (p)
+                        set_alias(info, info->argv[j]);
+                else
+                        print_alias(node_starts_with(info->alias, info->argv[j], '='));
+        }
+
+        return (0);
+}

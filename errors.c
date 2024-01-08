@@ -40,7 +40,7 @@ int _eputchar(char c)
 	if (c != BUF_FLUSH)
 		buf[j++] = c;
 
-	return 1;
+	return (1);
 }
 
 /**
@@ -64,7 +64,7 @@ int _putfd(char c, int fd)
 	if (c != BUF_FLUSH)
 		buf[j++] = c;
 
-	return 1;
+	return (1);
 }
 
 /**
@@ -79,13 +79,13 @@ int _putsfd(char *str, int fd)
 	int j = 0;
 
 	if (!str)
-		return 0;
+		return (0);
 
 	while (*str)
 	{
 		j += _putfd(*str++, fd);
 	}
 
-	return j;
+	return (j);
 }
 

@@ -23,9 +23,9 @@ int is_delim(char c, char *delim)
 	while (*delim)
 	{
 		if (*delim++ == c)
-			return 1;
+			return (1);
 	}
-	return 0;
+	return (0);
 }
 
 /**
@@ -43,7 +43,8 @@ int _isalpha(int c)
  * _atoi - Convert a string to an integer
  * @s: The string to be converted
  *
- * Return: 0 if there are no numbers in the string, otherwise the converted number
+ * Return: 0 if there are no numbers in the
+ * string, otherwise the converted number
  */
 int _atoi(char *s)
 {
@@ -69,5 +70,5 @@ int _atoi(char *s)
 
 	output = (sign == -1) ? -result : result;
 
-	return output;
+	return (output);
 }
